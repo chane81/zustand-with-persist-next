@@ -3,7 +3,8 @@
 ## Zustand 의 persist 기능 사용시 hydration 이슈에 대응하기 위한 코드를 작성함
 
 - 이미지
-  <img src='./readme/persist-issue.png' width='500'>
+  - <img src='./readme/persist-issue.png' width='650'>
+
 - 이슈 링크
   https://github.com/pmndrs/zustand/issues/938
 
