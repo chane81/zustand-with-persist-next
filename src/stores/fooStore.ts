@@ -47,24 +47,27 @@ export const initState: TStore = {
 // );
 
 /** 위에서 create 와 persist 를 감싼 부분을 makeStore로 간결화 */
-export const createStore = makeStore<TStore>('fooStore', (set, get) => ({
-  ...initState,
-  setInc: () => {
-    set({
-      count: get().count + 1
-    });
-  },
-  setDesc: () => {
-    set({
-      count: get().count - 1
-    });
-  },
-  setSwitch: () => {
-    set({
-      isOn: !get().isOn
-    });
-  }
-}));
+export const createStore = makeStore<TStore>(
+  (set, get) => ({
+    ...initState,
+    setInc: () => {
+      set({
+        count: get().count + 1
+      });
+    },
+    setDesc: () => {
+      set({
+        count: get().count - 1
+      });
+    },
+    setSwitch: () => {
+      set({
+        isOn: !get().isOn
+      });
+    }
+  }),
+  'fooStore'
+);
 
 /** store hook */
 export const useFooStore = ((selector, compare) => {

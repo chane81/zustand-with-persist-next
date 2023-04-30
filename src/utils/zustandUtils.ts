@@ -23,21 +23,29 @@ export const useStoreHook = <T, U>(
 };
 
 /** create store with devtools */
-export const makeStore = <T>(name: string, store: StateCreator<T, [], []>) => {
-  let storeWrap: StateCreator<
+export const makeStore = <T>(
+  stateCreator: StateCreator<T>,
+  persistName?: string
+) => {
+  let creatorWrap: StateCreator<
     T,
     [] | [['zustand/persist', unknown]],
     [] | [['zustand/devtools', never]]
-  > = store;
+  > = stateCreator;
+  let store = create(creatorWrap);
 
   if (process.env.NODE_ENV === 'development') {
-    storeWrap = devtools(store);
+    creatorWrap = devtools(stateCreator);
   }
 
-  return create(
-    persist(storeWrap, {
-      name,
-      storage: createJSONStorage(() => localStorage)
-    })
-  );
+  if (persistName) {
+    store = create(
+      persist(creatorWrap, {
+        name: persistName,
+        storage: createJSONStorage(() => localStorage)
+      })
+    );
+  }
+
+  return store;
 };
