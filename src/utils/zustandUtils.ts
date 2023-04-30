@@ -37,7 +37,7 @@ export const makeStore = <T>(name: string, store: StateCreator<T, [], []>) => {
   return create(
     persist(storeWrap, {
       name,
-      storage: createJSONStorage(() => sessionStorage)
+      storage: createJSONStorage(() => localStorage)
     })
   );
 };
