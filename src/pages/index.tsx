@@ -1,8 +1,8 @@
 import { useFooStore } from '@/stores/fooStore';
 import Image from 'next/image';
 import useLocalStorageState from 'use-local-storage-state';
-import { Count } from './Count';
-import { OnOff } from './OnOff';
+import Count from './count';
+import OnOff from './on-off';
 
 export default function Home() {
   return (

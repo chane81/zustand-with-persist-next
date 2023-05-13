@@ -20,4 +20,4 @@ const OnOff = () => {
   );
 };
 
-export { OnOff };
+export default OnOff;
