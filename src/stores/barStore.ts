@@ -1,16 +1,5 @@
 import { fnNoop, fnZero } from '@/utils/commonUtils';
-import {
-  TCompare,
-  TCreateStore,
-  TSelector,
-  makeStore,
-  useStoreHook,
-} from '@/utils/zustandUtils';
-import { useEffect, useState } from 'react';
-import { StateCreator, create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
-import { shallow } from 'zustand/shallow';
+import { createHook, makeStore } from '@/utils/zustandUtils';
 
 interface IUser {
   name: string;
@@ -22,6 +11,10 @@ interface IState {
   count: number;
   isOn: boolean;
   users: IUser[];
+  car: {
+    name: string;
+    price: number;
+  };
 }
 
 /** action */
@@ -33,13 +26,17 @@ interface IAction {
 }
 
 /** store */
-type TStore = IState & IAction;
+export type TStore = IState & IAction;
 
 /** 초기화 값 */
 export const initState: TStore = {
   count: 0,
   isOn: false,
   users: [],
+  car: {
+    name: 'bmw',
+    price: 500,
+  },
   getCount: fnZero,
   setInc: fnNoop,
   setDesc: fnNoop,
@@ -47,34 +44,61 @@ export const initState: TStore = {
 };
 
 /** store */
-export const createStore = makeStore<TStore>('barStore', (set, get) => ({
-  ...initState,
-  setInc: () => {
-    set((state) => {
-      state.count += 1;
-    });
-  },
-  setDesc: () => {
-    set((state) => {
-      state.count -= 1;
-    });
-  },
-  setSwitch: () => {
-    set((state) => {
-      state.isOn = !state.isOn;
-    });
-  },
-  getCount: () => {
-    return get().count;
-  },
-}));
+export const createStore = makeStore<TStore>(
+  (set, get) => ({
+    ...initState,
+    setInc: () => {
+      // before immer
+      // set({
+      //   count: get().count + 1,
+      // });
 
-/** store hook */
-export const useBarStore = <U>(
-  selector: TSelector<TStore, U>,
-  compare?: TCompare<U>,
-) => {
-  const store = useStoreHook<TStore, U>(createStore, initState);
+      // after immer
+      set((state) => {
+        state.count += 1;
+      });
+    },
+    setDesc: () => {
+      // before immer
+      // set({
+      //   count: get().count - 1,
+      // });
 
-  return store(selector, compare);
-};
+      // after immer
+      set((state) => {
+        state.count -= 1;
+      });
+    },
+    setSwitch: () => {
+      // before immer
+      // set({
+      //   isOn: !get().isOn,
+      // });
+
+      // after immer
+      set((state) => {
+        state.isOn = !state.isOn;
+      });
+    },
+    getCount: () => {
+      return get().count;
+    },
+  }),
+  // 'barStore',
+);
+
+/** store hook - 일반버전 */
+// export const useBarStore = <U>(
+//   selector: TSelector<TStore, U>,
+//   compare?: TCompare<U>,
+// ) => {
+//   const store = useStoreHook<TStore, U>(createStore, initState);
+
+//   return store(selector, compare);
+// };
+
+/** store hook - selector 사용을 store 의 field 를 array로 받게 사용 */
+// export const useBarStore = createHookWithArray<TStore>(createStore, initState);
+
+/** store hook - selector 사용을 callback 함수 사용 */
+export const useBarStore = createHook<TStore>(createStore, initState);

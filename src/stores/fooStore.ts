@@ -1,4 +1,11 @@
-import { makeStore, useStoreHook } from '@/utils/zustandUtils';
+import {
+  TCompare,
+  TSelector,
+  createHook,
+  createHookWithArray,
+  makeStore,
+  useStoreHook,
+} from '@/utils/zustandUtils';
 
 /** state */
 interface IState {
@@ -13,11 +20,11 @@ interface IAction {
   setSwitch: () => void;
 }
 
-type TStore = IState & Partial<IAction>;
+export type TStore = IState & Partial<IAction>;
 
 export const initState: TStore = {
   count: 0,
-  isOn: false
+  isOn: false,
 };
 
 // export const createStore = create(
@@ -51,27 +58,55 @@ export const createStore = makeStore<TStore>(
   (set, get) => ({
     ...initState,
     setInc: () => {
-      set({
-        count: get().count + 1
+      // before immer
+      // set({
+      //   count: get().count + 1,
+      // });
+
+      console.log('inc');
+      // after immer
+      set((state) => {
+        state.count += 1;
       });
     },
     setDesc: () => {
-      set({
-        count: get().count - 1
+      // before immer
+      // set({
+      //   count: get().count - 1,
+      // });
+
+      // after immer
+      set((state) => {
+        state.count -= 1;
       });
     },
     setSwitch: () => {
-      set({
-        isOn: !get().isOn
+      // before immer
+      // set({
+      //   isOn: !get().isOn,
+      // });
+
+      // after immer
+      set((state) => {
+        state.isOn = !state.isOn;
       });
-    }
+    },
   }),
-  'fooStore'
+  // 'fooStore',
 );
 
-/** store hook */
-export const useFooStore = ((selector, compare) => {
-  const store = useStoreHook(createStore, initState);
+/** store hook - 일반버전 */
+// export const useFooStore = <U>(
+//   selector: TSelector<TStore, U>,
+//   compare?: TCompare<U>,
+// ) => {
+//   const store = useStoreHook<TStore, U>(createStore, initState);
 
-  return store(selector, compare);
-}) as typeof createStore;
+//   return store(selector, compare);
+// };
+
+/** store hook - selector 사용을 store 의 field 를 array로 받게 사용 */
+// export const useFooStore = createHookWithArray<TStore>(createStore, initState);
+
+/** store hook - selector 사용을 callback 함수 사용 */
+export const useFooStore = createHook<TStore>(createStore, initState);
