@@ -1,6 +1,6 @@
 import Count from '@/components/Count';
-import { TStore, useFooStore } from '@/stores/fooStore';
-import { TSelector, selector } from '@/utils/zustandUtils';
+import { useFooStore } from '@/stores/fooStore';
+import { selector } from '@/utils/zustandUtils';
 
 const FooCount = () => {
   /** createHook 버전 */
@@ -20,13 +20,6 @@ const FooCount = () => {
   const { count, setInc, setDesc } = useFooStore(
     selector(['count', 'setInc', 'setDesc']),
   );
-
-  /** createHookWithArray 버전 */
-  // const { count, setInc, setDesc } = useFooStore([
-  //   'count',
-  //   'setInc',
-  //   'setDesc',
-  // ]);
 
   return <Count count={count} setInc={setInc} setDesc={setDesc} />;
 };

@@ -11,7 +11,6 @@ const VeeOnOff = () => {
     }),
     shallow,
   );
-  // const { isOn, setSwitch } = useVeeStore(['isOn', 'setSwitch']);
 
   return <OnOff isOn={isOn} setSwitch={setSwitch} />;
 };
