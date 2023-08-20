@@ -8,9 +8,9 @@ import {
 } from '@/utils/zustandUtils';
 import {
   UseBoundStoreWithEqualityFn,
-  createWithEqualityFn,
+  createWithEqualityFn as create,
 } from 'zustand/traditional';
-import { StoreApi, create } from 'zustand';
+import { StoreApi } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 type GenericState = Record<string, any>;
@@ -85,7 +85,7 @@ export const store = create<TStore>(
       });
     },
   }),
-  // Object.is, // Specify the default equality function, which can be shallow
+  shallow,
 );
 
 export const useVeeStore = createStoreWithSelectors(store);

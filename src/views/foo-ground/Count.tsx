@@ -19,6 +19,10 @@ const FooCount = () => {
   /** createHook + arrayToSelector 버전 */
   const { count, setInc, setDesc } = useFooStore(
     selector(['count', 'setInc', 'setDesc']),
+    // compare example
+    (a, b) => {
+      return a.count === b.count;
+    },
   );
 
   return <Count count={count} setInc={setInc} setDesc={setDesc} />;

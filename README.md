@@ -3,12 +3,13 @@
 ## Zustand 의 persist 기능 사용시 hydration 이슈에 대응하기 위한 코드를 작성함
 
 - 이미지
+
   - <img src='./readme/persist-issue.png' width='650'>
 
 - 이슈 링크
   https://github.com/pmndrs/zustand/issues/938
 
-- 해결방안 참고
+- 해결방안
 
   - 참고 url
     https://github.com/pmndrs/zustand/issues/1145#issuecomment-1209244183
@@ -20,45 +21,45 @@
     ```typescript
     const emptyState = {
       where: {
-        places: []
+        places: [],
       },
       what: {
-        filters: {}
+        filters: {},
       },
       setPlaces: () => {
         return;
       },
       setFilters: () => {
         return;
-      }
+      },
     };
 
     const usePersistedStore = create(
       persist<State>(
         (set) => ({
           where: {
-            places: []
+            places: [],
           },
           what: {
-            filters: {}
+            filters: {},
           },
           setPlaces: (newPlaces) =>
             set({
               where: {
-                places: newPlaces
-              }
+                places: newPlaces,
+              },
             }),
           setFilters: (filters) =>
             set({
               what: {
-                filters
-              }
-            })
+                filters,
+              },
+            }),
         }),
         {
-          name: 'search-storage'
-        }
-      )
+          name: 'search-storage',
+        },
+      ),
     );
 
     // This a fix to ensure zustand never hydrates the store before React hydrates the page
@@ -70,4 +71,32 @@
 
       return hydrated ? store : selector(emptyState);
     }) as typeof usePersistedStore;
+    ```
+
+## Zustand 의 create 함수 deprecated 에 관해
+
+- 아래 이미지 처럼 create 가 deprecated 되었으니 createWithEqualityFn 을 사용해라고 경고하고 있다.
+- 기존에는 create 를 사용하여 store 를 생성하여 각 컴포넌트에서 store 를 사용시에 불필요한 리렌더링을 방지하기 위해 shallow 를 매번 넣어 주어야 했다.
+- 이제 createWithEqualityFn 을 사용하면서 shallow 를 미리 세팅할 수 있어, 사용하는 컴포넌트에서는 shallow 를 넣어줄 필요가 없어진다.
+
+- 이미지
+
+  - <img src='./readme/deprecated-create.png' width='650'>
+
+- 이슈 링크
+  https://github.com/pmndrs/zustand/discussions/1937
+
+- 해결방안
+
+  - 기존 zustand 에서 create 를 import 해서 사용하던것을 'zustand/traditional'에서 'createWithEqualityFn' 를 import 해와서 create 를 대체해야한다.
+
+  - code
+
+    ```typescript
+    import { shallow } from 'zustand/shallow';
+    - import { create } from 'zustand'
+    + import { createWithEqualityFn } from 'zustand/traditional'
+
+    - const useMyStore = create(...)
+    + const useMyStore = createWithEqualityFn(..., shallow)
     ```

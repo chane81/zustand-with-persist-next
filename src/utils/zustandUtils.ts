@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { StateCreator, StoreApi, UseBoundStore, create } from 'zustand';
+import { StateCreator, StoreApi } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
 
 import {
-  UseBoundStoreWithEqualityFn,
-  createWithEqualityFn,
+  UseBoundStoreWithEqualityFn as UseBoundStore,
+  createWithEqualityFn as create,
 } from 'zustand/traditional';
 
 export type TSelector<T, U> = (state: T) => U;
@@ -98,8 +98,9 @@ export const makeStore = <T>(
         name,
         storage: createJSONStorage(() => localStorage),
       }),
+      shallow,
     );
   }
 
-  return create<T>()(withTools);
+  return create<T>()(withTools, shallow);
 };
