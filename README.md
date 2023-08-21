@@ -82,7 +82,7 @@
 
 - 이미지
 
-  <img src='./readme/440-version-changed.png' width='650'>
+  <img src='./readme/440-version-create-changed.png' width='650'>
   <img src='./readme/deprecated-create.png' width='650'>
 
 - 이슈 링크
