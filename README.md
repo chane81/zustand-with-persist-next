@@ -75,12 +75,14 @@
 
 ## Zustand 의 create 함수 deprecated 에 관해
 
+- 이번 v4.4.0 버전에서 create 함수 -> createWithEqualityFn 함수로 사용하도록 권고함(v4.4.0 이상버전부터는 create 함수 사용시 deprecated 로 warning 이 출력됨)
 - 아래 이미지 처럼 create 가 deprecated 되었으니 createWithEqualityFn 을 사용해라고 경고하고 있다.
-- 기존에는 create 를 사용하여 store 를 생성하여 각 컴포넌트에서 store 를 사용시에 불필요한 리렌더링을 방지하기 위해 shallow 를 매번 넣어 주어야 했다.
+- 기존에는(v4.4.0 이전) create 를 사용하여 store 를 생성하여 각 컴포넌트에서 store 를 사용시에 불필요한 리렌더링을 방지하기 위해 shallow 를 매번 넣어 주어야 했다.
 - 이제 createWithEqualityFn 을 사용하면서 shallow 를 미리 세팅할 수 있어, 사용하는 컴포넌트에서는 shallow 를 넣어줄 필요가 없어진다.
 
 - 이미지
 
+  - <img src='./readme/440-version-changed.png' width='650'>
   - <img src='./readme/deprecated-create.png' width='650'>
 
 - 이슈 링크
