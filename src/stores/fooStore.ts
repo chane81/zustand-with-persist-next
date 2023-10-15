@@ -63,7 +63,6 @@ export const createStore = makeStore<TStore>(
       //   count: get().count + 1,
       // });
 
-      console.log('inc');
       // after immer
       set((state) => {
         state.count += 1;
