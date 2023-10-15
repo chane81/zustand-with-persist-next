@@ -1,11 +1,4 @@
-import {
-  TCompare,
-  TSelector,
-  createHook,
-  createHookWithArray,
-  makeStore,
-  useStoreHook,
-} from '@/utils/zustandUtils';
+import { createHook, makeStore } from '@/utils/zustandUtils';
 
 /** state */
 interface IState {
@@ -55,7 +48,7 @@ export const initState: TStore = {
 
 /** 위에서 create 와 persist 를 감싼 부분을 makeStore로 간결화 */
 export const createStore = makeStore<TStore>(
-  (set, get) => ({
+  (set) => ({
     ...initState,
     setInc: () => {
       // before immer
@@ -91,7 +84,7 @@ export const createStore = makeStore<TStore>(
       });
     },
   }),
-  // 'fooStore',
+  'fooStore',
 );
 
 /** store hook - 일반버전 */

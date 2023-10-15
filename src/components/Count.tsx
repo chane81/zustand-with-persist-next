@@ -1,5 +1,5 @@
 import { cn } from '@/utils/styleUtils';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 interface IPropsCount {
   className?: string;

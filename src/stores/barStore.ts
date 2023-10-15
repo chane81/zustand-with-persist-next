@@ -1,4 +1,3 @@
-import { fnNoop, fnZero } from '@/utils/commonUtils';
 import { createHook, makeStore } from '@/utils/zustandUtils';
 
 interface IUser {
@@ -26,7 +25,7 @@ interface IAction {
 }
 
 /** store */
-export type TStore = IState & IAction;
+export type TStore = IState & Partial<IAction>;
 
 /** 초기화 값 */
 export const initState: TStore = {
@@ -37,10 +36,6 @@ export const initState: TStore = {
     name: 'bmw',
     price: 500,
   },
-  getCount: fnZero,
-  setInc: fnNoop,
-  setDesc: fnNoop,
-  setSwitch: fnNoop,
 };
 
 /** store */
@@ -84,7 +79,7 @@ export const createStore = makeStore<TStore>(
       return get().count;
     },
   }),
-  // 'barStore',
+  'barStore',
 );
 
 /** store hook - 일반버전 */

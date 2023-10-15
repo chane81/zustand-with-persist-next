@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
-import { StateCreator, StoreApi } from 'zustand';
+import type { StateCreator, StoreApi } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
 
-import {
-  UseBoundStoreWithEqualityFn as UseBoundStore,
-  createWithEqualityFn as create,
-} from 'zustand/traditional';
+import type { UseBoundStoreWithEqualityFn as UseBoundStore } from 'zustand/traditional';
+import { createWithEqualityFn as create } from 'zustand/traditional';
 
 export type TSelector<T, U> = (state: T) => U;
 export type TCompare<U> = (a: U, b: U) => boolean;
@@ -72,6 +70,9 @@ export const createHook =
   <TStore>(createStore: TCreateStore<TStore>, initState: Partial<TStore>) =>
   <U>(selector: TSelector<TStore, U>, compare?: TCompare<U>) => {
     const [hydrated, setHydrated] = useState(false);
+
+    console.log('is server', typeof window);
+
     useEffect(() => setHydrated(true), []);
 
     const store = createStore(selector, compare ?? shallow);

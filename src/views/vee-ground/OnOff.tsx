@@ -1,6 +1,6 @@
 import OnOff from '@/components/OnOff';
-import { store, useVeeStore } from '@/stores/veeStore';
-import { shallow } from 'zustand/shallow';
+import { store } from '@/stores/veeStore';
+// import { shallow } from 'zustand/shallow';
 
 const VeeOnOff = () => {
   const { isOn, setSwitch } = store(

@@ -1,21 +1,9 @@
-import {
-  TCompare,
-  TSelector,
-  createHook,
-  createHookWithArray,
-  makeStore,
-  useStoreHook,
-} from '@/utils/zustandUtils';
-import {
-  UseBoundStoreWithEqualityFn,
-  createWithEqualityFn as create,
-} from 'zustand/traditional';
-import { StoreApi } from 'zustand';
+import type { UseBoundStoreWithEqualityFn } from 'zustand/traditional';
+import { createWithEqualityFn as create } from 'zustand/traditional';
+import type { StoreApi } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-type GenericState = Record<string, any>;
-
-export const createStoreWithSelectors = <T extends GenericState>(
+export const createStoreWithSelectors = <T extends object>(
   store: UseBoundStoreWithEqualityFn<StoreApi<T>>,
 ): (<K extends keyof T>(keys: K[]) => Pick<T, K>) => {
   const useStore: <K extends keyof T>(keys: K[]) => Pick<T, K> = <

@@ -1,4 +1,4 @@
-import { store, useVeeStore } from '@/stores/veeStore';
+import { useVeeStore } from '@/stores/veeStore';
 import Count from '@/components/Count';
 
 const VeeCount = () => {
