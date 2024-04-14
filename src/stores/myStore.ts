@@ -1,4 +1,5 @@
 import {
+  createZustandContext,
   makeContextStoreHook,
   ZustandProvider,
 } from '@/utils/zustand/zustandContextUtils';
@@ -70,11 +71,6 @@ export const createStore = makeStore<TStore>(
   'myStore',
 );
 
-export const MyContext = createContext<TCreateStore<TStore> | null>(null);
-
-export const MyProvider = ZustandProvider<TStore>({
-  context: MyContext,
-  createStore: createStore,
-});
-
-export const useMyStore = makeContextStoreHook(MyContext);
+const context = createZustandContext<TStore>();
+export const MyProvider = ZustandProvider<TStore>({ context, createStore });
+export const useMyStore = makeContextStoreHook(context);
