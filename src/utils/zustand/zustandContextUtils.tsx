@@ -9,8 +9,9 @@ type TContext<TStore> = Context<TCreateStore<TStore> | null>;
 export const createZustandContext = <TStore,>(): TContext<TStore> =>
   createContext<TCreateStore<TStore> | null>(null);
 
-export const makeContextStoreHook = <TStore,>(context: TContext<TStore>) => {
-  return function <U>(selector: TSelector<TStore, U>): U {
+export const makeContextStoreHook =
+  <TStore,>(context: TContext<TStore>) =>
+  <U,>(selector: TSelector<TStore, U>): U => {
     const store = useContext(context);
 
     if (!store) {
@@ -19,7 +20,6 @@ export const makeContextStoreHook = <TStore,>(context: TContext<TStore>) => {
 
     return useStoreWithEqualityFn(store, selector, shallow);
   };
-};
 
 interface MakeContextProviderProps<TStore> {
   context: TContext<TStore>;
