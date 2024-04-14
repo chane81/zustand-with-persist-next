@@ -26,7 +26,7 @@ interface MakeProviderProps<TStore> {
   createStore: TCreateStore<TStore>;
 }
 
-export const ZustandProvider = <TStore,>({
+export const makeContextProvider = <TStore,>({
   context,
   createStore,
 }: MakeProviderProps<TStore>) => {
