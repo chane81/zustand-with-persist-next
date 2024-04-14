@@ -21,7 +21,7 @@ export const makeContextStoreHook = <TStore,>(context: TContext<TStore>) => {
   };
 };
 
-interface MakeProviderProps<TStore> {
+interface MakeContextProviderProps<TStore> {
   context: TContext<TStore>;
   createStore: TCreateStore<TStore>;
 }
@@ -29,7 +29,7 @@ interface MakeProviderProps<TStore> {
 export const makeContextProvider = <TStore,>({
   context,
   createStore,
-}: MakeProviderProps<TStore>) => {
+}: MakeContextProviderProps<TStore>) => {
   const Provider = ({ children }: PropsWithChildren) => {
     const storeRef = useRef<TCreateStore<TStore>>();
 
