@@ -1,10 +1,13 @@
 import type { PropsWithChildren } from 'react';
-import { useContext, useRef, type Context } from 'react';
+import { createContext, useContext, useRef, type Context } from 'react';
 import type { TCreateStore, TSelector } from './zustandUtils';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 import { shallow } from 'zustand/shallow';
 
 type TContext<TStore> = Context<TCreateStore<TStore> | null>;
+
+export const createZustandContext = <TStore,>(): TContext<TStore> =>
+  createContext<TCreateStore<TStore> | null>(null);
 
 export const makeContextStoreHook = <TStore,>(context: TContext<TStore>) => {
   return function <U>(selector: TSelector<TStore, U>): U {
