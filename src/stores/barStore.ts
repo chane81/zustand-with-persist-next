@@ -1,4 +1,4 @@
-import { createHook, makeStore } from '@/utils/zustandUtils';
+import { createHook, makeStore } from '@/utils/zustand/zustandUtils';
 
 interface IUser {
   name: string;

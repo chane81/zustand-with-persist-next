@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { StateCreator, StoreApi } from 'zustand';
+import { type StateCreator, type StoreApi } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
@@ -80,15 +80,12 @@ export const createHook =
     return hydrated ? store : selector(initState as TStore);
   };
 
+type WithDevtools = ['zustand/devtools', never];
+type WithImmer = ['zustand/immer', never];
+type TMakeStore<T> = StateCreator<T, [WithDevtools, WithImmer], []>;
+
 /** make store */
-export const makeStore = <T>(
-  store: StateCreator<
-    T,
-    [['zustand/devtools', never], ['zustand/immer', never]],
-    []
-  >,
-  name?: string,
-) => {
+export const makeStore = <T>(store: TMakeStore<T>, name?: string) => {
   const withTools = devtools(immer(store), {
     enabled: process.env.NODE_ENV === 'development',
   });

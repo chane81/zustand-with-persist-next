@@ -1,9 +1,11 @@
-import type { TCreateStore, TSelector } from '@/utils/zustandUtils';
-import { makeStore } from '@/utils/zustandUtils';
-import type { ReactNode } from 'react';
-import { createContext, useContext, useRef } from 'react';
-import { shallow } from 'zustand/shallow';
-import { useStoreWithEqualityFn } from 'zustand/traditional';
+import {
+  makeContextStoreHook,
+  ZustandProvider,
+} from '@/utils/zustand/zustandContextUtils';
+import type { TCreateStore } from '@/utils/zustand/zustandUtils';
+import { makeStore } from '@/utils/zustand/zustandUtils';
+import type { PropsWithChildren } from 'react';
+import { createContext } from 'react';
 
 interface IUser {
   name: string;
@@ -69,28 +71,11 @@ export const createStore = makeStore<TStore>(
   'myStore',
 );
 
-type CreateStore = TCreateStore<TStore>;
+export const MyContext = createContext<TCreateStore<TStore> | null>(null);
 
-export const MyContext = createContext<CreateStore | null>(null);
+export const MyProvider = ZustandProvider<TStore>({
+  context: MyContext,
+  createStore: createStore,
+});
 
-export const MyProvider = ({ children }: { children: ReactNode }) => {
-  const storeRef = useRef<CreateStore>();
-
-  if (!storeRef.current) {
-    storeRef.current = createStore;
-  }
-
-  return (
-    <MyContext.Provider value={storeRef.current}>{children}</MyContext.Provider>
-  );
-};
-
-export function useMyStore<U>(selector: TSelector<TStore, U>): U {
-  const store = useContext(MyContext);
-
-  if (!store) {
-    throw new Error('Missing StoreProvider');
-  }
-
-  return useStoreWithEqualityFn(store, selector, shallow);
-}
+export const useMyStore = makeContextStoreHook(MyContext);

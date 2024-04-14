@@ -1,6 +1,6 @@
 import Count from '@/components/Count';
 import { useFooStore } from '@/stores/fooStore';
-import { selector } from '@/utils/zustandUtils';
+import { selector } from '@/utils/zustand/zustandUtils';
 
 const FooCount = () => {
   /** createHook 버전 */

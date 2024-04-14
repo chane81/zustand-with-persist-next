@@ -1,6 +1,6 @@
 import Count from '@/components/Count';
 import { useBarStore } from '@/stores/barStore';
-import { selector } from '@/utils/zustandUtils';
+import { selector } from '@/utils/zustand/zustandUtils';
 
 const BarCount = () => {
   /** createHook + arrayToSelector 버전 */
