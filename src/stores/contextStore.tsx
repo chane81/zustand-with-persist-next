@@ -1,3 +1,5 @@
+'use client';
+
 import {
   createZustandContext,
   makeContextProvider,
@@ -33,7 +35,7 @@ interface IAction {
 export type TStore = IState & Partial<IAction>;
 
 /** 초기화 값 */
-export const initState: TStore = {
+export const defaultState: TStore = {
   count: 0,
   isOn: false,
   users: [],
@@ -44,8 +46,9 @@ export const initState: TStore = {
 };
 
 /** store */
-export const createStore = makeStore<TStore>(
-  (set, get) => ({
+export const createStore = (initState?: Partial<TStore>) =>
+  makeStore<TStore>((set, get) => ({
+    ...defaultState,
     ...initState,
     setInc: () => {
       set((state) => {
@@ -65,9 +68,7 @@ export const createStore = makeStore<TStore>(
     getCount: () => {
       return get().count;
     },
-  }),
-  'myStore',
-);
+  }));
 
 const context = createZustandContext<TStore>();
 export const ContextProvider = makeContextProvider<TStore>({
