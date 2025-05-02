@@ -1,3 +1,5 @@
+'use client';
+
 import OnOff from '@/components/OnOff';
 import { useFooStore } from '@/stores/fooStore';
 import { selector } from '@/utils/zustand/zustandUtils';

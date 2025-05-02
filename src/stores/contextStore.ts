@@ -70,5 +70,8 @@ export const createStore = makeStore<TStore>(
 );
 
 const context = createZustandContext<TStore>();
-export const MyProvider = makeContextProvider<TStore>({ context, createStore });
-export const useMyStore = makeContextStoreHook(context);
+export const ContextProvider = makeContextProvider<TStore>({
+  context,
+  createStore,
+});
+export const useContextStore = makeContextStoreHook(context);

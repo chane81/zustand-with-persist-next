@@ -1,3 +1,5 @@
+'use client';
+
 import Count from '@/components/Count';
 import { useBarStore } from '@/stores/barStore';
 import { selector } from '@/utils/zustand/zustandUtils';

@@ -1,3 +1,5 @@
+'use client';
+
 import { useVeeStore } from '@/stores/veeStore';
 import Count from '@/components/Count';
 

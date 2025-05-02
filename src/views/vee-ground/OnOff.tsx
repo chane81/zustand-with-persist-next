@@ -1,3 +1,5 @@
+'use client';
+
 import OnOff from '@/components/OnOff';
 import { store } from '@/stores/veeStore';
 // import { shallow } from 'zustand/shallow';

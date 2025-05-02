@@ -1,8 +1,10 @@
+'use client';
+
 import OnOff from '@/components/OnOff';
-import { useMyStore } from '@/stores/myStore';
+import { useContextStore } from '@/stores/contextStore';
 
 const VeeOnOff = () => {
-  const { isOn, setSwitch } = useMyStore((state) => ({
+  const { isOn, setSwitch } = useContextStore((state) => ({
     isOn: state.isOn,
     setSwitch: state.setSwitch,
   }));

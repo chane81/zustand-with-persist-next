@@ -1,9 +1,10 @@
-import { useVeeStore } from '@/stores/veeStore';
+'use client';
+
 import Count from '@/components/Count';
-import { useMyStore } from '@/stores/myStore';
+import { useContextStore } from '@/stores/contextStore';
 
 const VeeCount = () => {
-  const { count, setInc, setDesc } = useMyStore((state) => ({
+  const { count, setInc, setDesc } = useContextStore((state) => ({
     count: state.count,
     setInc: state.setInc,
     setDesc: state.setDesc,
