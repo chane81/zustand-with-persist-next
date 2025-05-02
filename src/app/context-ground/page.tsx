@@ -1,15 +1,12 @@
-import { ContextProvider } from '@/stores/contextStore';
-import Count from '@/views/context-ground/Count';
-import OnOff from '@/views/context-ground/OnOff';
+import Card from '@/views/context-ground/Card';
+import Layout from '@/views/share/Layout';
 
 const contextGround = () => {
   return (
-    <ContextProvider>
-      <div className='flex flex-col gap-3 items-center justify-start p-6 bg-slate-50 min-h-screen'>
-        <OnOff />
-        <Count />
-      </div>
-    </ContextProvider>
+    <Layout title='Context Ground' direction='row'>
+      <Card title='Provider 1' initState={{ isOn: true }} />
+      <Card title='Provider 2' initState={{ isOn: false }} />
+    </Layout>
   );
 };
 
