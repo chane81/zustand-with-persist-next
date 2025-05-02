@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const tailwindConfig = {
-  content: ['./src/{pages,components,views,hooks}/**/*.{ts,tsx}'],
+  content: ['./src/{app,components,views,hooks}/**/*.{ts,tsx}'],
   theme: {
     borderWidth: {
       DEFAULT: '1px',
