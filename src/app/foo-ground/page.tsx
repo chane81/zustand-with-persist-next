@@ -5,10 +5,9 @@ import Layout from '@/views/share/Layout';
 
 export default function FooGround() {
   return (
-    <Layout title='Foo Ground'>
+    <Layout title='Foo Ground' direction='col' bottom={<LinkBarCount />}>
       <OnOff />
       <Count />
-      <LinkBarCount />
     </Layout>
   );
 }
