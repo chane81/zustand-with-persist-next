@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { type StateCreator, type StoreApi } from 'zustand';
+import type { StateCreator, StoreApi } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
