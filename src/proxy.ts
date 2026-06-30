@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-/** middleware */
-export const middleware = (req: NextRequest) => {
+/** proxy (구 middleware) */
+export const proxy = (req: NextRequest) => {
   const res = NextResponse.next();
   const pathName = req.nextUrl.pathname;
 
