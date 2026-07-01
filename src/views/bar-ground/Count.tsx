@@ -6,8 +6,8 @@ import { selector } from '@/utils/zustand/zustandUtils';
 
 const BarCount = () => {
   /** createHook + arrayToSelector 버전 */
-  const { count, setDesc, setInc } = useBarStore(
-    selector(['count', 'setDesc', 'setInc', 'getCount']),
+  const { count, setDesc, setInc, carSpecInch} = useBarStore(
+    selector(['count', 'setDesc', 'setInc', 'getCount', 'car.spec.inch'])
   );
 
   return (

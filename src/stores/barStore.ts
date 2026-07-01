@@ -13,6 +13,9 @@ interface IState {
   car: {
     name: string;
     price: number;
+    spec: {
+      inch: number;
+    }
   };
 }
 
@@ -35,6 +38,9 @@ export const initState: TStore = {
   car: {
     name: 'bmw',
     price: 500,
+    spec: {
+      inch: 100,
+    }
   },
 };
 
