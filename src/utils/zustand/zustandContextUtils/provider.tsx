@@ -1,25 +1,8 @@
 import type { PropsWithChildren } from 'react';
-import { createContext, useContext, useRef, type Context } from 'react';
-import type { TCreateStore, TSelector } from './zustandUtils';
-import { useStoreWithEqualityFn } from 'zustand/traditional';
-import { shallow } from 'zustand/shallow';
+import { useRef } from 'react';
 
-type TContext<TStore> = Context<TCreateStore<TStore> | null>;
-
-export const createZustandContext = <TStore,>(): TContext<TStore> =>
-  createContext<TCreateStore<TStore> | null>(null);
-
-export const makeContextStoreHook =
-  <TStore,>(context: TContext<TStore>) =>
-  <U,>(selector: TSelector<TStore, U>): U => {
-    const store = useContext(context);
-
-    if (!store) {
-      throw new Error('Missing StoreProvider');
-    }
-
-    return useStoreWithEqualityFn(store, selector, shallow);
-  };
+import type { TCreateStore } from '../types';
+import type { TContext } from './context';
 
 interface MakeContextProviderProps<TStore> {
   context: TContext<TStore>;
@@ -30,6 +13,7 @@ interface ProviderProps<TStore> {
   initState?: Partial<TStore>;
 }
 
+/** context 기반 store provider 생성 */
 export const makeContextProvider = <TStore,>({
   context,
   createStore,
