@@ -98,8 +98,5 @@ export const createStore = makeStore<TStore>(
 //   return store(selector, compare);
 // };
 
-/** store hook - selector 사용을 store 의 field 를 array로 받게 사용 */
-// export const useBarStore = createHookWithArray<TStore>(createStore, initState);
-
 /** store hook - selector 사용을 callback 함수 사용 */
 export const useBarStore = createHook<TStore>(createStore, initState);

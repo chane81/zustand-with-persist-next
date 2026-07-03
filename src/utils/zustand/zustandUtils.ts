@@ -51,24 +51,6 @@ type PathValue<T, P extends string> = P extends `${infer K}.${infer R}`
     ? T[P]
     : never;
 
-/**
- * store selector 함수
- * @param arrKey store 의 field name 이 array 로 들어감
- * ex) ['count', 'setInf']
- */
-// export const selector =
-//   <TStore, K extends keyof TStore>(arrKey: Array<K>) =>
-//   (state: TStore) => {
-//     const rtn = arrKey.reduce((acc, cur) => {
-//       return {
-//         ...acc,
-//         ...{ [cur]: state[cur] },
-//       };
-//     }, {});
-
-//     return rtn as Pick<TStore, K>;
-//   };
-
 export const selector =
   <TStore, P extends Paths<TStore>>(arrKey: Array<P>) =>
   (state: TStore) => {
@@ -78,19 +60,14 @@ export const selector =
         const keys = pathStr.split('.');
 
         // 1. 런타임에서 중첩된 실제 값 찾아오기
-        let value: any = state;
-        for (const key of keys) {
-          value = value?.[key];
-        }
+        const value = keys.reduce<any>((v, k) => v?.[k], state);
 
-        // 2. 'car.spec.inch' -> 'carSpecInch' 형태로 문자열 치환
-        // 점(.) 뒤의 소문자를 대문자로 바꾸고 점을 제거하는 정규식
-        const camelKey = pathStr.replace(/\.([a-z])/g, (_, match) =>
-          match.toUpperCase(),
-        );
+        // 2. 'car.spec.inch' -> 'carSpecInch' 형태로 변환
+        // 점 뒤 문자 1개를 대문자화하고 점 제거 (CamelCasePath 타입과 동일 규칙)
+        const camelKey = pathStr.replace(/\.(.)/g, (_, c: string) => c.toUpperCase());
 
         // 3. 변환된 키로 결과 객체에 담기
-        (acc as any)[camelKey] = value;
+        (acc as Record<string, unknown>)[camelKey] = value;
 
         return acc;
       },
