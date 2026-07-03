@@ -13,7 +13,7 @@ const Card = ({ title, className, initState }: IPropsCard) => {
   return (
     <div
       className={cn(
-        'w-full flex flex-col gap-3 items-center justify-start p-6 bg-slate-100 rounded-lg',
+        'w-full flex flex-col gap-3 items-center justify-start p-3 bg-slate-100 rounded-lg',
         className,
       )}
     >
