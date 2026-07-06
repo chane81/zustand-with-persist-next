@@ -85,7 +85,7 @@ export const createStore = makeStore<TStore>(
       return get().count;
     },
   }),
-  'barStore',
+  { persist: 'localStorage', name: 'barStore' },
 );
 
 /** store hook - 일반버전 */

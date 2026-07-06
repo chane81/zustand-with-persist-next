@@ -84,7 +84,7 @@ export const createStore = makeStore<TStore>(
       });
     },
   }),
-  'fooStore',
+  { persist: 'localStorage', name: 'fooStore' },
 );
 
 /** store hook - 일반버전 */

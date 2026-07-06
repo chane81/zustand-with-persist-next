@@ -2,4 +2,4 @@
 export type { TSelector, TCompare, TCreateStore } from '../types';
 export { selector } from './selector';
 export { useStoreHook, createHook } from './hooks';
-export { makeStore } from './makeStore';
+export { makeStore, makeStoreWithCookie, makeStoreWithLocal } from './makeStore';
