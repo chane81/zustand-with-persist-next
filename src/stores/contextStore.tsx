@@ -46,7 +46,10 @@ export const defaultState: TStore = {
 };
 
 /** store */
-export const createStore = (initState?: Partial<TStore>) =>
+export const createStore = (
+  initState?: Partial<TStore>,
+  name = 'contextStore',
+) =>
   makeStore<TStore>((set, get) => ({
     ...defaultState,
     ...initState,
@@ -68,7 +71,7 @@ export const createStore = (initState?: Partial<TStore>) =>
     getCount: () => {
       return get().count;
     },
-  }));
+  }), { persist: 'cookie', name });
 
 const context = createZustandContext<TStore>();
 export const ContextProvider = makeContextProvider<TStore>({
