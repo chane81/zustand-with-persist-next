@@ -1,7 +1,6 @@
 import { useContext } from 'react';
-import { useStoreWithEqualityFn as create } from 'zustand/traditional';
-import { shallow } from 'zustand/shallow';
-
+import { useShallow } from 'zustand/shallow';
+import { useStore } from 'zustand';
 import type { TSelector } from '../types';
 import type { TContext } from './context';
 
@@ -15,5 +14,5 @@ export const makeContextStoreHook =
       throw new Error('Missing StoreProvider');
     }
 
-    return create(store, selector, shallow);
+    return useStore(store, useShallow(selector));
   };

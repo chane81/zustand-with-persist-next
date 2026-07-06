@@ -6,9 +6,8 @@ import { createWithEqualityFn as create } from 'zustand/traditional';
 
 import { cookieStorage } from './cookieStorage';
 
-type WithDevtools = ['zustand/devtools', never];
 type WithImmer = ['zustand/immer', never];
-type TMakeStore<T> = StateCreator<T, [WithDevtools, WithImmer], []>;
+type TMakeStore<T> = StateCreator<T, [WithImmer], []>;
 
 /** persist storage 종류 */
 type TPersistType = 'cookie' | 'localStorage';
