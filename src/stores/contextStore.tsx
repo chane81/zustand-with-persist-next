@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  createZustandContext,
   makeContextProvider,
   makeContextStoreHook,
 } from '@/utils/zustand/zustandContextUtils';
@@ -73,9 +72,5 @@ export const createStore = (
     },
   }), { persist: 'cookie', name });
 
-const context = createZustandContext<TStore>();
-export const ContextProvider = makeContextProvider<TStore>({
-  context,
-  createStore,
-});
+export const { ContextProvider, context } = makeContextProvider<TStore>(createStore);
 export const useContextStore = makeContextStoreHook(context);

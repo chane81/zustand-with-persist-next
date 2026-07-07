@@ -29,7 +29,7 @@ const withMiddleware = <T>(store: TMakeStore<T>) =>
  * store 생성 통합 진입점
  * - 옵션 미지정: persist 없는 메모리 전용 store
  * - `{ persist: 'cookie', name }`: 쿠키 persist (SSR 깜빡임 없음)
- * - `{ persist: 'local', name }`: localStorage persist (클라 전용)
+ * - `{ persist: 'localStorage', name }`: localStorage persist (클라 전용)
  */
 export const makeStore = <T>(
   store: TMakeStore<T>,

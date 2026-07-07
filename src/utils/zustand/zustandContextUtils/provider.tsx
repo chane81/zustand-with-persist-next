@@ -1,33 +1,30 @@
-import type { PropsWithChildren } from 'react';
+import type { ReactNode } from 'react';
 import { useRef } from 'react';
-
 import type { TCreateStore } from '../types';
-import type { TContext } from './context';
+import { createZustandContext } from './context';
 
-interface MakeContextProviderProps<TStore> {
-  context: TContext<TStore>;
-  createStore: (
-    initState?: Partial<TStore>,
-    name?: string,
-  ) => TCreateStore<TStore>;
-}
+type MakeContextProviderProps<TStore> = (
+  initState?: Partial<TStore>,
+  name?: string,
+) => TCreateStore<TStore>;
 
 interface ProviderProps<TStore> {
   initState?: Partial<TStore>;
-  /** persist 쿠키 키 — Provider 인스턴스별 격리 + SSR 초기값 매칭용 */
   name?: string;
+  children: ReactNode;
 }
 
 /** context 기반 store provider 생성 */
-export const makeContextProvider = <TStore,>({
-  context,
-  createStore,
-}: MakeContextProviderProps<TStore>) => {
-  const Provider = ({
+export const makeContextProvider = <TStore,>(
+  createStore: MakeContextProviderProps<TStore>,
+) => {
+  const context = createZustandContext<TStore>();
+
+  const ContextProvider = ({
     initState,
     name,
     children,
-  }: PropsWithChildren<ProviderProps<TStore>>) => {
+  }: ProviderProps<TStore>) => {
     const storeRef = useRef<TCreateStore<TStore> | null>(null);
 
     if (!storeRef.current) {
@@ -41,5 +38,8 @@ export const makeContextProvider = <TStore,>({
     );
   };
 
-  return Provider;
+  return {
+    ContextProvider,
+    context,
+  };
 };
