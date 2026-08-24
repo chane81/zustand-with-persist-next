@@ -1,7 +1,23 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* v3 config 의 theme.borderWidth 중 v4 기본에 없는 값 (0/2/4/8 은 v4 기본 제공) */
+@theme {
+  --border-width-3: 3px;
+  --border-width-6: 6px;
+}
+
+/* v3 config 의 theme.extend.backgroundImage 이전 */
+@utility bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
+}
+
+@utility bg-gradient-conic {
+  background-image: conic-gradient(
+    from 180deg at 50% 50%,
+    var(--tw-gradient-stops)
+  );
+}
 
 :root {
-  @apply bg-slate-50;
+  background-color: var(--color-slate-50);
 }

@@ -17,7 +17,7 @@ const Nav = () => {
   const pathname = usePathname();
 
   return (
-    <nav className='sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur'>
+    <nav className='sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm'>
       <ul className='mx-auto flex max-w-xl items-center gap-2 px-6 py-3'>
         {NAV_ITEMS.map(({ href, label }) => {
           const active = pathname === href;
