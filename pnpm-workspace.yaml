@@ -1,8 +1,10 @@
 allowBuilds:
   sharp: true
+minimumReleaseAgeExclude:
+  - eslint@10.9.0
 overrides:
-  fast-uri@<3.1.2: '>=3.1.2'
-  js-yaml@<4.2.0: '>=4.2.0'
+  fast-uri@<4.1.2: '>=4.1.2'
+  js-yaml@<5.3.0: '>=5.3.0'
   serialize-javascript@<7.0.5: '>=7.0.5'
   braces@<3.0.3: '3.0.3'
   cross-spawn@<7.0.5: '7.0.5'
@@ -13,10 +15,13 @@ overrides:
   webpack@<5.104.1: '5.104.1'
   '@babel/runtime@<7.26.10': '7.26.10'
   ajv@<6.14.0: '6.14.0'
-  brace-expansion@<2.0.3: '2.0.3'
+  'ajv@>=7.0.0 <8.20.0': '8.20.0'
+  brace-expansion@<2.1.4: '2.1.4'
+  'brace-expansion@>=4.0.0 <5.0.9': '5.0.9'
   lodash-es@<4.18.0: '4.18.0'
   micromatch@<4.0.8: '4.0.8'
-  nanoid@<3.3.8: '3.3.8'
+  nanoid@<3.3.18: '3.3.18'
   picomatch@<2.3.2: '2.3.2'
-  postcss@<8.5.10: '8.5.10'
+  postcss@<8.5.26: '8.5.26'
+  sharp@<0.35.3: '0.35.3'
   yaml@<2.8.3: '2.8.3'
