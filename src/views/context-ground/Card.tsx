@@ -1,4 +1,5 @@
-import { ContextProvider, TStore } from '@/stores/contextStore';
+import type { TStore } from '@/stores/contextStore';
+import { ContextProvider } from '@/stores/contextStore';
 import { readCookieState } from '@/utils/zustand/zustandUtils/readCookieState';
 import OnOff from './OnOff';
 import Count from './Count';

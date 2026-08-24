@@ -9,6 +9,7 @@ export const useStoreHook = <T, U>(
   initState: Partial<T>,
 ) => {
   const [hydrated, setHydrated] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR/CSR hydration 시점 구분용. 최초 마운트 1회만 실행
   useEffect(() => setHydrated(true), []);
 
   return (selector: TSelector<T, U>, compare?: TCompare<U>) => {
@@ -23,8 +24,6 @@ export const createHook =
   <TStore>(createStore: TCreateStore<TStore>, initState: Partial<TStore>) =>
   <U>(selector: TSelector<TStore, U>, compare?: TCompare<U>) => {
     const [hydrated, setHydrated] = useState(false);
-
-    console.log('is server', typeof window);
 
     useEffect(() => setHydrated(true), []);
 
