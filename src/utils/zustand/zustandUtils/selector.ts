@@ -43,10 +43,10 @@ type Selected<T, P extends string> = {
  *     → state['car']['spec']['inch'] 순서로 한 단계씩 내려감
  * 중간에 없는 키를 만나면 에러 없이 undefined 반환 (?. 덕분)
  */
-const getByPath = (obj: unknown, path: string) =>
+const getByPath = (state: unknown, path: string) =>
   path
     .split('.')
-    .reduce<unknown>((v, k) => (v as Record<string, unknown>)?.[k], obj);
+    .reduce<unknown>((v, k) => (v as Record<string, unknown>)?.[k], state);
 
 /** 'car.spec.inch' → 'carSpecInch' (CamelCasePath 타입과 동일 규칙) */
 const toCamelKey = (path: string) =>
