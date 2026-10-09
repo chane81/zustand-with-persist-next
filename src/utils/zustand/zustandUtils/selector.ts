@@ -36,7 +36,13 @@ type Selected<T, P extends string> = {
 
 /* ───────── 런타임 ───────── */
 
-/** 'car.spec.inch' → state.car.spec.inch */
+/**
+ * dot 경로 문자열로 객체의 중첩 값을 꺼낸다
+ * ex) getByPath(state, 'car.spec.inch')
+ *     → 'car.spec.inch' 를 ['car', 'spec', 'inch'] 로 쪼갠 뒤
+ *     → state['car']['spec']['inch'] 순서로 한 단계씩 내려감
+ * 중간에 없는 키를 만나면 에러 없이 undefined 반환 (?. 덕분)
+ */
 const getByPath = (obj: unknown, path: string) =>
   path
     .split('.')
