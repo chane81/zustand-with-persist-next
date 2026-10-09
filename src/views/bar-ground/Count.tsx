@@ -10,6 +10,8 @@ const BarCount = () => {
     selector(['count', 'setDesc', 'setInc', 'getCount', 'car.spec.inch']),
   );
 
+  console.log('car.spec.inch', carSpecInch);
+
   return (
     <Count
       className='border-0 bg-pink-500 text-white'
