@@ -1,104 +1,145 @@
-# Zustand + Persist(localstorage) + Next.js
+# Zustand + Persist + Next.js (App Router)
 
-## Zustand 의 persist 기능 사용시 hydration 이슈에 대응하기 위한 코드를 작성함
+Zustand 를 Next.js 에서 쓸 때 반복되는 보일러플레이트와 **persist hydration 문제**를 해결하기 위한 실험 프로젝트.
+핵심은 [`src/utils/zustand`](./src/utils/zustand) 의 유틸이다.
 
-- 이미지
+> zustand 5.0.14 · Next.js 16.3.8 · React 19.1 기준
 
-  - <img src='./readme/persist-issue.png' width='650'>
+## 해결하려는 문제
 
-- 이슈 링크
-  https://github.com/pmndrs/zustand/issues/938
+| 문제 | 해결 |
+|---|---|
+| store 마다 `create` + `persist` + `devtools` + `immer` 를 반복해서 감쌈 | `makeStore` 한 줄로 통합 |
+| 컴포넌트마다 `shallow` 를 넘겨야 불필요한 리렌더링이 없음 | `createWithEqualityFn(..., shallow)` 로 기본값 지정 |
+| persist(localStorage) 값이 SSR 결과와 달라 **hydration mismatch** 발생 ([#938](https://github.com/pmndrs/zustand/issues/938)) | `createHook` 이 hydration 전에는 초기값 반환 |
+| 그래도 첫 화면에 초기값 → 저장값으로 **깜빡임** | 쿠키 persist + 서버에서 쿠키를 읽어 초기값 주입 |
+| `(s) => ({ a: s.a, b: s.b })` selector 반복 작성 | `selector(['a', 'b', 'car.spec.inch'])` |
 
-- 해결방안
+<img src='./readme/persist-issue.png' width='560'>
 
-  - 참고 url
-    https://github.com/pmndrs/zustand/issues/1145#issuecomment-1209244183
+## 구조
 
-  - useEffect 를 이용하여 hydrate 가 되었는지 감지하는 상태를 넣어두고 hydrate 가 되었다면 persist 를 사용한 store 를 반환하고 그렇지 않았다면 persist 가 없는 init state(초기 상태값) 을 반환하게 하여 해결
+```mermaid
+flowchart LR
+  subgraph makeStore["makeStore(store, options)"]
+    direction LR
+    I[immer] --> D[devtools<br/><sub>dev 에서만</sub>] --> P{persist?}
+    P -- "'cookie'" --> C[cookieStorage]
+    P -- "'localStorage'" --> L[localStorage]
+    P -- 없음 --> M[메모리]
+    C & L & M --> E["createWithEqualityFn<br/>(…, shallow)"]
+  end
 
-  - code
+  E --> H1["createHook<br/><sub>전역 store + hydration 가드</sub>"]
+  E --> H2["makeContextProvider<br/>makeContextStoreHook<br/><sub>Provider 단위 store</sub>"]
+```
 
-    ```typescript
-    const emptyState = {
-      where: {
-        places: [],
-      },
-      what: {
-        filters: {},
-      },
-      setPlaces: () => {
-        return;
-      },
-      setFilters: () => {
-        return;
-      },
-    };
+```
+src/utils/zustand
+├── types.ts                  # TSelector, TCompare, TCreateStore
+├── zustandUtils              # 전역 store
+│   ├── makeStore.ts          # store 생성 통합 진입점
+│   ├── hooks.ts              # createHook (hydration 가드)
+│   ├── selector.ts           # 배열/dot 경로 selector
+│   ├── cookieStorage.ts      # 쿠키 기반 StateStorage
+│   └── readCookieState.ts    # 서버에서 persist 쿠키 읽기 (next/headers)
+└── zustandContextUtils       # Context(Provider) 기반 store
+    ├── provider.tsx          # makeContextProvider
+    └── hook.ts               # makeContextStoreHook
+```
 
-    const usePersistedStore = create(
-      persist<State>(
-        (set) => ({
-          where: {
-            places: [],
-          },
-          what: {
-            filters: {},
-          },
-          setPlaces: (newPlaces) =>
-            set({
-              where: {
-                places: newPlaces,
-              },
-            }),
-          setFilters: (filters) =>
-            set({
-              what: {
-                filters,
-              },
-            }),
-        }),
-        {
-          name: 'search-storage',
-        },
-      ),
-    );
+## 사용법
 
-    // This a fix to ensure zustand never hydrates the store before React hydrates the page
-    // else it causes a mismatch between SSR/SSG and client side on first draw which produces an error
-    export const useStore = ((selector, compare) => {
-      const store = usePersistedStore(selector, compare);
-      const [hydrated, setHydrated] = useState(false);
-      useEffect(() => setHydrated(true), []);
+### 1. 전역 store — `makeStore` + `createHook`
 
-      return hydrated ? store : selector(emptyState);
-    }) as typeof usePersistedStore;
-    ```
+```ts
+// stores/fooStore.ts
+import { createHook, makeStore } from '@/utils/zustand/zustandUtils';
 
-## Zustand 의 create 함수 deprecated 에 관해
+export const initState = { count: 0, isOn: false };
 
-- 이번 v4.4.0 버전에서 create 함수 -> createWithEqualityFn 함수로 사용하도록 권고함(v4.4.0 이상버전부터는 create 함수 사용시 deprecated 로 warning 이 출력됨)
-- 아래 이미지 처럼 create 가 deprecated 되었으니 createWithEqualityFn 을 사용해라고 경고하고 있다.
-- 기존에는(v4.4.0 이전) create 를 사용하여 store 를 생성하여 각 컴포넌트에서 store 를 사용시에 불필요한 리렌더링을 방지하기 위해 shallow 를 매번 넣어 주어야 했다.
-- 이제 createWithEqualityFn 을 사용하면서 shallow 를 미리 세팅할 수 있어, 사용하는 컴포넌트에서는 shallow 를 넣어줄 필요가 없어진다.
+export const createStore = makeStore<TStore>(
+  (set) => ({
+    ...initState,
+    setInc: () => set((state) => { state.count += 1; }), // immer
+  }),
+  { persist: 'localStorage', name: 'fooStore' }, // 생략 시 메모리 전용
+);
 
-- 이미지
+export const useFooStore = createHook<TStore>(createStore, initState);
+```
 
-  <img src='./readme/440-version-create-changed.png' width='650'>
-  <img src='./readme/deprecated-create.png' width='650'>
+```tsx
+// 컴포넌트
+const { count, setInc, carSpecInch } = useFooStore(
+  selector(['count', 'setInc', 'car.spec.inch']), // dot 경로 → camelCase 키, 타입 추론됨
+  (a, b) => a.count === b.count,                   // 선택. 기본값 shallow
+);
+```
 
-- 이슈 링크
-  https://github.com/pmndrs/zustand/discussions/1937
+`createHook` 은 [`useHydrated`](./src/hooks/useHydrated.ts) (`useSyncExternalStore` 기반)로 hydration 전에는 `initState` 를, 이후에는 실제 store 값을 반환한다. mismatch 에러는 없지만 **저장값으로 바뀌는 순간 깜빡임**은 남는다.
 
-- 해결방안
+### 2. Provider 단위 store — 쿠키 persist + SSR 주입 (깜빡임 없음)
 
-  - 기존 zustand 에서 create 를 import 해서 사용하던것을 'zustand/traditional'에서 'createWithEqualityFn' 를 import 해와서 create 를 대체해야한다.
+```mermaid
+sequenceDiagram
+  participant B as Browser
+  participant S as Server Component
+  participant P as ContextProvider
+  B->>S: 요청 (Cookie: contextStore1=...)
+  S->>S: readCookieState(name)
+  S->>P: initState = { ...기본값, ...쿠키값 }
+  P-->>B: SSR HTML (저장값 반영됨)
+  B->>B: hydrate — 서버와 같은 값 → 깜빡임 없음
+  B->>B: 상태 변경 시 cookieStorage 가 쿠키 갱신
+```
 
-  - code
+```tsx
+// stores/contextStore.tsx ('use client')
+export const createStore = (initState?: Partial<TStore>, name = 'contextStore') =>
+  makeStore<TStore>((set) => ({ ...defaultState, ...initState, /* actions */ }), {
+    persist: 'cookie',
+    name,
+  });
 
-    ```typescript
-    import { shallow } from 'zustand/shallow';
-    - import { create } from 'zustand'
-    + import { createWithEqualityFn } from 'zustand/traditional'
+export const { ContextProvider, context } = makeContextProvider<TStore>(createStore);
+export const useContextStore = makeContextStoreHook(context); // useShallow 적용
+```
 
-    - const useMyStore = create(...)
-    + const useMyStore = createWithEqualityFn(..., shallow)
-    ```
+```tsx
+// Server Component
+import { readCookieState } from '@/utils/zustand/zustandUtils/readCookieState'; // 서버 전용, barrel 미포함
+
+const cookieState = await readCookieState<TStore>(name);
+
+<ContextProvider name={name} initState={{ ...initState, ...cookieState }}>
+  <Count />
+</ContextProvider>
+```
+
+`name` 이 persist 키이자 쿠키 키라서 Provider 인스턴스마다 고유해야 한다.
+
+## persist 방식 선택
+
+| | `localStorage` | `cookie` |
+|---|---|---|
+| 서버에서 읽기 | ❌ | ✅ (`readCookieState`) |
+| 첫 렌더 깜빡임 | 있음 | 없음 |
+| 용량 / 오버헤드 | 크게 저장 가능, 요청에 안 실림 | 약 4KB, **매 요청에 실림** |
+| 적합한 상태 | 큰 데이터, 클라 전용 화면 | 테마·토글 같은 작은 UI 상태 |
+
+## 실험 페이지
+
+`pnpm dev` 후 `/` 접속 시 `/foo-ground` 로 이동.
+
+| 경로 | 내용 |
+|---|---|
+| `/foo-ground` | `makeStore` + localStorage + `createHook` + 커스텀 compare |
+| `/bar-ground` | 중첩 경로 `selector(['car.spec.inch'])` |
+| `/context-ground` | Provider 2개 독립 store + 쿠키 persist + SSR 주입 |
+| `/vee-ground` | 유틸 없이 `createWithEqualityFn` 직접 사용 (비교용) |
+
+## 참고
+
+- `zustand/traditional` 은 `use-sync-external-store` 를 peer 로 요구하므로 직접 의존성으로 설치되어 있다 ([공식 문서](https://zustand.docs.pmnd.rs/reference/apis/create-with-equality-fn)).
+- hydration 이슈: [pmndrs/zustand#938](https://github.com/pmndrs/zustand/issues/938), [해결 아이디어](https://github.com/pmndrs/zustand/issues/1145#issuecomment-1209244183)
